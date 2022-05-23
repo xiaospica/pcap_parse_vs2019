@@ -5,10 +5,42 @@ PcapParser::PcapParser(char* file_s, uint32_t file_len) {
 	this->file_pointer = file_s;
 	this->file_size = file_len;
 
+	// init ether proto map
+	EtherProto.insert(std::pair<uint16_t, std::string>(0x0800, "IPv4"));
+	EtherProto.insert(std::pair<uint16_t, std::string>(0x0806, "ARP"));
+	EtherProto.insert(std::pair<uint16_t, std::string>(0x0835, "RARP"));
+	EtherProto.insert(std::pair<uint16_t, std::string>(0x86DD, "IPv6"));
+
+	// init ip layer hanlder
+	IPLayerHanlder["IPv4"] = &PcapParser::ipv4_segment_hanlde_callback;
+	IPLayerHanlder["ARP"] = &PcapParser::arp_hanlde_callback;
+	IPLayerHanlder["RARP"] = &PcapParser::rarp_hanlde_callback;
+	IPLayerHanlder["IPv6"] = &PcapParser::ipv6_segment_hanlde_callback;
+
 }
 
 PcapParser::~PcapParser() {
 
+}
+
+PcapParserErr PcapParser::ipv4_segment_hanlde_callback() {
+	logger.info("ipv4 processing ...");
+	return kPcapParserSucc;
+}
+
+PcapParserErr PcapParser::ipv6_segment_hanlde_callback() {
+	logger.info("ipv6 processing ...");
+	return kPcapParserSucc;
+}
+
+PcapParserErr PcapParser::arp_hanlde_callback() {
+	logger.info("arp processing ...");
+	return kPcapParserSucc;
+}
+
+PcapParserErr PcapParser::rarp_hanlde_callback() {
+	logger.info("rarp processing ...");
+	return kPcapParserSucc;
 }
 
 PcapParserErr PcapParser::parse_pcap_header() {
@@ -18,15 +50,11 @@ PcapParserErr PcapParser::parse_pcap_header() {
 	return kPcapParserSucc;
 }
 
-PcapParserErr PcapParser::run() {
+PcapParserErr PcapParser::run(std::string _filter) {
 
 	// process pcap header
 	this->parse_pcap_header();
 	
-	EtherProto.insert(std::pair<uint16_t, std::string>(0x0800, "IPv4"));
-	EtherProto.insert(std::pair<uint16_t, std::string>(0x0806, "ARP"));
-	EtherProto.insert(std::pair<uint16_t, std::string>(0x0835, "RARP"));
-	EtherProto.insert(std::pair<uint16_t, std::string>(0x86DD, "IPv6"));
 	uint32_t idx = sizeof(PcapHeader);
 	std::string type;
 
@@ -46,6 +74,7 @@ PcapParserErr PcapParser::run() {
 		auto ether_proto_pair = EtherProto.find(ether_proto_type);
 		if (ether_proto_pair != EtherProto.end()) {
 			type = ether_proto_pair->second;
+			(this->*IPLayerHanlder[type])();
 		}
 		else {
 			type = "unkown type";

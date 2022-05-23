@@ -20,7 +20,7 @@ int main(void) {
     LogInit("log/rotating.txt");
     spdlog::logger logger = *(spdlog::get("pcap-parse"));
 
-    const char* pcap_path = "F:/Laptop Disk E/BaiduNetdiskDownload/知识星球_手写一个抓包软件/day04-05/day3.pcap";
+    const char* pcap_path = "F:/Laptop Disk E/BaiduNetdiskDownload/知识星球_手写一个抓包软件/day07/day7.pcap";
     FileIO* file_io = new FileIO(pcap_path);
     FileMappingErr ret = file_io->createFile();
     if (ret != kCreateFileMappingSucc) {
@@ -29,8 +29,9 @@ int main(void) {
     logger.info("create file mapping successfully");
 
     // parse pcap
+    std::string packet_filter = "";
     PcapParser* pcap_parser = new PcapParser(file_io->file_pointer, file_io->file_size);
-    pcap_parser->run();
+    pcap_parser->run(packet_filter);
 
     // close log
     spdlog::shutdown();
