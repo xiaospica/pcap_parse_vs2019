@@ -51,6 +51,32 @@ struct EtherHeader {
     uint16_t Type;
 };
 
+// define network layer packet
+struct IPVersion {
+    uint8_t Version;
+    uint8_t IHL;
+};
+
+struct IPFixedHeader {
+    uint8_t Version_IHL;
+    uint8_t TypeofService;
+    uint16_t TotalLength;
+    uint16_t Identification;
+    uint16_t Flags_FragmentOffset;
+    uint8_t TimetoLive;
+    uint8_t Protocol;
+    uint16_t HeaderChecksum;
+    uint32_t SourceAddress;
+    uint32_t DestinationAddress;
+};
+
+struct IPPacket {
+    IPFixedHeader fixed_header;
+    uint8_t* Options;
+    uint8_t* Padding;
+    uint8_t* Data;
+};
+
 #pragma pack()
 
 #endif
