@@ -140,16 +140,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="data_link_layer.h" />
     <ClInclude Include="fileio.h" />
     <ClInclude Include="logging.h" />
-    <ClInclude Include="pcap_format.h" />
+    <ClInclude Include="network_layer.h" />
+    <ClInclude Include="protocol_format.h" />
     <ClInclude Include="pcap_parser.h" />
+    <ClInclude Include="transport_layer.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="data_link_layer.cpp" />
     <ClCompile Include="fileio.cpp" />
+    <ClCompile Include="network_layer.cpp" />
     <ClCompile Include="pcap_parser.cpp" />
     <ClCompile Include="process_pcap.cpp" />
+    <ClCompile Include="transport_layer.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

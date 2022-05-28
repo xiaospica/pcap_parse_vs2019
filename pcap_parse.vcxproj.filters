@@ -21,13 +21,22 @@
     <ClInclude Include="logging.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="pcap_format.h">
+    <ClInclude Include="protocol_format.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="pcap_parser.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="data_link_layer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="network_layer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="transport_layer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -42,6 +51,15 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="utils.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="data_link_layer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="network_layer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="transport_layer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

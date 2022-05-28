@@ -16,7 +16,7 @@
 #include <sys/stat.h>
 #include <windows.h>
 
-#include "pcap_format.h"
+#include "protocol_format.h"
 
  // file mapping err
 enum FileMappingErr {

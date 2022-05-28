@@ -15,12 +15,20 @@ uint16_t bswap_16(uint16_t x){
 
 }
 
-IPVersion ip_version_len_swap(uint8_t version_ihl) {
+uint32_t bswap_32(uint32_t x) {
+	return ((x >> 24) & 0xff) |
+		((x << 8) & 0xff0000) |
+		((x >> 8) & 0xff00) |
+		((x << 24) & 0xff000000);
+}
 
-	IPVersion ip_version;
-	ip_version.IHL = 4 * (version_ihl & 0x0f);
-	ip_version.Version = (version_ihl >> 4) & 0x0f;
-
-	return ip_version;
+void ip_int_to_str(uint32_t ip, char* ip_str)
+{
+	unsigned char bytes[4];
+	bytes[0] = ip & 0xFF;
+	bytes[1] = (ip >> 8) & 0xFF;
+	bytes[2] = (ip >> 16) & 0xFF;
+	bytes[3] = (ip >> 24) & 0xFF;
+	sprintf(ip_str, "%d.%d.%d.%d\0", bytes[3], bytes[2], bytes[1], bytes[0]);
 
 }

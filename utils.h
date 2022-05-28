@@ -3,12 +3,13 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include "pcap_parser.h"
 
 int arrayToMac(const uint8_t* array, char* macaddr);
 
 uint16_t bswap_16(uint16_t x);
 
-IPVersion ip_version_len_swap(uint8_t version_ihl);
+uint32_t bswap_32(uint32_t x);
+
+void ip_int_to_str(uint32_t ip, char* ip_str);
 
 #endif
