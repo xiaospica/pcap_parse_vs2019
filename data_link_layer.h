@@ -20,9 +20,9 @@ class DataLinkLayer
 		EtherFrameHeader ether_frame_header;
 		// ether layer header
 		std::map<uint16_t, std::string> EtherProto;
-		std::string type; // ether layer proto type
 		char mac_dst[18] = {};
 		char mac_src[18] = {};
+		std::string type; // ether layer proto type
 
 		NetworkLayer network_layer = NetworkLayer(is_big_endian);
 		

@@ -71,11 +71,13 @@ PcapParserErr NetworkLayer::arp_hanlde_callback(char* file_ptr) {
 	switch (arp_header.Opcode)
 	{
 		case ARP_REQUEST:
-			logger.info("[ARP请求] {}({}) 查询 {} 的MAC地址在哪里", s_ip, s_mac,	t_ip);
+			printf("[ARP请求] %s(%s) 查询 %s 的MAC地址在哪里\n", s_ip, s_mac, t_ip);
+			//logger.info("[ARP请求] {}({}) 查询 {} 的MAC地址在哪里", s_ip, s_mac,	t_ip);
 			arp_table.insert(std::pair<std::string, std::string>(s_ip, s_mac));
 			break;
 		case ARP_RESPONSE:
-			logger.info("[ARP请求] {}({}) 回复  {} 的MAC地址在我这里", s_ip, s_mac, t_ip);
+			printf("[ARP响应] %s(%s) 回复 %s 的MAC地址在我这里\n", s_ip, s_mac, t_ip);
+			//logger.info("[ARP响应] {}({}) 回复 {} 的MAC地址在我这里", s_ip, s_mac, t_ip);
 			arp_table.insert(std::pair<std::string, std::string>(s_ip, s_mac));
 			break;
 		default:

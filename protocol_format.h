@@ -30,10 +30,21 @@
 #define ARP_REQUEST 1
 #define ARP_RESPONSE 2
 
-#define LEN_UDP_HEADER 16
+#define LEN_UDP_HEADER 8
 
 #define DNS_PORT 53
 #define MULTI_DNS_PORT 5353
+#define LEN_DNS_HEADER 12
+#define DNS_QUERY 0
+#define DNS_RESPONSE 1
+#define DNS_QUERY_TYPE_A 1 // query ip from domain
+#define DNS_QUERY_TYPE_CNAME 5 // query domain from domain
+#define DNS_QUERY_TYPE_PTR 12 // query
+#define LEN_DNS_POINTER 2
+#define DOT 46
+
+
+
 
 enum PcapParserErr {
     kPcapParserSucc = 0,
@@ -202,9 +213,9 @@ struct DNSHeader
             ID = bswap_16(ID);
             Flags = bswap_16(Flags);
             QDCOUNT = bswap_16(QDCOUNT);
-            ANCOUNT = bswap_32(ANCOUNT);
+            ANCOUNT = bswap_16(ANCOUNT);
             NSCOUNT = bswap_16(NSCOUNT);
-            ARCOUNT = bswap_32(ARCOUNT);
+            ARCOUNT = bswap_16(ARCOUNT);
         }
     }
 };
@@ -223,16 +234,48 @@ struct _DNSHeader
 
     void flag_swap(void)
     {
-        QR = header.Flags & 0x0001;
-        OPCODE = header.Flags & 0x00E1;
-        AA = header.Flags & 0x0010;
-        TC = header.Flags & 0x0040;
-        RD = header.Flags & 0x0080;
-        RA = header.Flags & 0x0100;
-        Z = header.Flags & 0x0E00;
-        RCODE = header.Flags & 0xF000;
+        QR = (header.Flags & 0x8000) >> 15;
+        OPCODE = (header.Flags & 0x7800) >> 11;
+        AA = (header.Flags & 0x0400) >> 10;
+        TC = (header.Flags & 0x0200) >> 9;
+        RD = (header.Flags & 0x0100) >> 8;
+        RA = (header.Flags & 0x0080) >> 7;
+        Z = (header.Flags & 0x0070) >> 4;
+        RCODE = (header.Flags & 0x000F);
     }
 
+};
+
+struct DNSQuery
+{
+    uint16_t Query_Type;
+    uint16_t Query_Class;
+    char Domain_Name[100];
+
+    void swap(bool is_big_endian)
+    {
+        if (is_big_endian) // TODO why no swap
+        {
+            Query_Type = bswap_16(Query_Type);
+            Query_Class = bswap_16(Query_Class);
+        }
+    }
+
+};
+
+struct DNSAnswer
+{
+    uint32_t Time_to_Live;
+    uint16_t Data_Len;
+
+    void swap(bool is_big_endian)
+    {
+        if (is_big_endian) // TODO why no swap
+        {
+            Time_to_Live = bswap_32(Time_to_Live);
+            Data_Len = bswap_16(Data_Len);
+        }
+    }
 };
 
 #pragma pack()

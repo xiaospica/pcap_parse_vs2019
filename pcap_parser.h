@@ -31,6 +31,7 @@ class PcapParser {
 		// define packet header parse func
 		PcapParserErr parse_packet_header(void);
 		PcapParserErr run(std::string);
+		void output(uint32_t, DataLinkLayer);
 
 
 

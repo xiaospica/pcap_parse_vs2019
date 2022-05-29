@@ -20,7 +20,7 @@ int main(void) {
     LogInit("log/rotating.txt");
     spdlog::logger logger = *(spdlog::get("pcap-parse"));
 
-    const char* pcap_path = "F:/Laptop Disk E/BaiduNetdiskDownload/知识星球_手写一个抓包软件/day08-09/day8.pcap";
+    const char* pcap_path = "F:/Laptop Disk E/BaiduNetdiskDownload/知识星球_手写一个抓包软件/day08-09/test.pcap";
     FileIO* file_io = new FileIO(pcap_path);
     FileMappingErr ret = file_io->createFile();
     if (ret != kCreateFileMappingSucc) {

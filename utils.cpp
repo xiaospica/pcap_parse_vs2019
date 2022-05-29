@@ -32,3 +32,10 @@ void ip_int_to_str(uint32_t ip, char* ip_str)
 	sprintf(ip_str, "%d.%d.%d.%d\0", bytes[3], bytes[2], bytes[1], bytes[0]);
 
 }
+
+uint8_t bit_reverse(uint8_t b) {
+	b = (b & 0xF0) >> 4 | (b & 0x0F) << 4;
+	b = (b & 0xCC) >> 2 | (b & 0x33) << 2;
+	b = (b & 0xAA) >> 1 | (b & 0x55) << 1;
+	return b;
+}

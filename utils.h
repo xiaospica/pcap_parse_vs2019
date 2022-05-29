@@ -12,4 +12,6 @@ uint32_t bswap_32(uint32_t x);
 
 void ip_int_to_str(uint32_t ip, char* ip_str);
 
+uint8_t bit_reverse(uint8_t b);
+
 #endif

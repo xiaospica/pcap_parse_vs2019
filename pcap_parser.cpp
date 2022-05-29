@@ -55,20 +55,23 @@ PcapParserErr PcapParser::run(std::string _filter) {
 		file_pointer += pcap_packet_header.Caplen;
 		idx += LEN_PCAP_PACKET_HEADER + pcap_packet_header.Caplen;
 
-		logger.info("[{:05}] {} {:4} Bytes {} -> {} [{:6}] {:15} -> {:15} {:3} [{:6}] {:5} -> {:5} {:5} Bytes",
-						cnt,
-						timestrbuf,
-						pcap_packet_header.Caplen,
-						data_link_layer.mac_src, 
-						data_link_layer.mac_dst, 
-						data_link_layer.type, 
-						data_link_layer.network_layer.ip_src,
-						data_link_layer.network_layer.ip_dst, 
-						data_link_layer.network_layer._ip_packet_header.header.TimetoLive,
-						data_link_layer.network_layer.type,
-						data_link_layer.network_layer.transport_layer.udp_header.Src_Port,
-						data_link_layer.network_layer.transport_layer.udp_header.Dst_Port,
-						data_link_layer.network_layer.transport_layer.udp_header.Length);
+		//logger.info("[{:05}] {} {:4} Bytes {} -> {} [{:6}] {:15} -> {:15} {:3} [{:6}] {:5} -> {:5} {:5} Bytes",
+		//				cnt,
+		//				timestrbuf,
+		//				pcap_packet_header.Caplen,
+		//				data_link_layer.mac_src, 
+		//				data_link_layer.mac_dst, 
+		//				data_link_layer.type, 
+		//				data_link_layer.network_layer.ip_src,
+		//				data_link_layer.network_layer.ip_dst, 
+		//				data_link_layer.network_layer._ip_packet_header.header.TimetoLive,
+		//				data_link_layer.network_layer.type,
+		//				data_link_layer.network_layer.transport_layer.udp_header.Src_Port,
+		//				data_link_layer.network_layer.transport_layer.udp_header.Dst_Port,
+		//				data_link_layer.network_layer.transport_layer.udp_header.Length);
+
+		this->output(cnt, data_link_layer);
+
 		cnt += 1;
 	}
 	logger.info("total cnt is: {}", cnt);
@@ -78,4 +81,76 @@ PcapParserErr PcapParser::run(std::string _filter) {
 	}
 	return kPcapParserSucc;
 
+}
+
+void PcapParser::output(uint32_t cnt, DataLinkLayer data_link_layer)
+{
+	printf("[%5d] %s %4d Bytes %s->%s %6s",
+		cnt,
+		timestrbuf,
+		pcap_packet_header.Caplen,
+		data_link_layer.mac_src,
+		data_link_layer.mac_dst,
+		data_link_layer.type.c_str());
+
+	if (data_link_layer.type == "ARP")
+	{
+		printf("\n");
+		return;
+	}
+	if (data_link_layer.type == "IPv4")
+	{
+
+		//TODO
+		printf("\t%15s->%15s%5d\t%6s", 
+			data_link_layer.network_layer.ip_src, 
+			data_link_layer.network_layer.ip_dst, 
+			data_link_layer.network_layer._ip_packet_header.header.TimetoLive, 
+			data_link_layer.network_layer.type.c_str());
+		if (data_link_layer.network_layer.type == "UDP")
+		{
+
+			printf("\t%5d->%5d%5d\n",
+				data_link_layer.network_layer.transport_layer.udp_header.Src_Port, 
+				data_link_layer.network_layer.transport_layer.udp_header.Dst_Port, 
+				data_link_layer.network_layer.transport_layer.udp_header.Length);
+		}
+		if (data_link_layer.network_layer.type == "TCP")
+		{
+			printf("\n");
+		}
+		if (data_link_layer.network_layer.type == "ICMP")
+		{
+			printf("\n");
+		}
+		else
+		{
+			printf("\n");
+		}
+		return;
+	}
+	if (data_link_layer.type == "IPv6")
+	{
+		printf("\n");
+		return;
+	}
+	if (data_link_layer.type == "RARP")
+	{
+		printf("\n");
+		return;
+	}
+	if (data_link_layer.type == "LLDP")
+	{
+		printf("\n");
+		return;
+	}
+	if (data_link_layer.type == "LLC")
+	{
+		printf("\n");
+	}
+	else
+	{
+		printf("\n");
+		return;
+	}
 }
