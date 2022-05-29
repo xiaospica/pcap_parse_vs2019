@@ -39,6 +39,9 @@
     <ClInclude Include="transport_layer.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="application_layer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="process_pcap.cpp">
@@ -60,6 +63,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="transport_layer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ApplicationLayer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

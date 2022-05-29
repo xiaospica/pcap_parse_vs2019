@@ -140,6 +140,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="application_layer.h" />
     <ClInclude Include="data_link_layer.h" />
     <ClInclude Include="fileio.h" />
     <ClInclude Include="logging.h" />
@@ -150,6 +151,7 @@
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ApplicationLayer.cpp" />
     <ClCompile Include="data_link_layer.cpp" />
     <ClCompile Include="fileio.cpp" />
     <ClCompile Include="network_layer.cpp" />

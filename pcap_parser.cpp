@@ -55,7 +55,7 @@ PcapParserErr PcapParser::run(std::string _filter) {
 		file_pointer += pcap_packet_header.Caplen;
 		idx += LEN_PCAP_PACKET_HEADER + pcap_packet_header.Caplen;
 
-		logger.info("[{}] {} {:4} Bytes {} {} {:11} {:15} {:15} {:3} {:11}",
+		logger.info("[{:05}] {} {:4} Bytes {} -> {} [{:6}] {:15} -> {:15} {:3} [{:6}] {:5} -> {:5} {:5} Bytes",
 						cnt,
 						timestrbuf,
 						pcap_packet_header.Caplen,
@@ -65,10 +65,17 @@ PcapParserErr PcapParser::run(std::string _filter) {
 						data_link_layer.network_layer.ip_src,
 						data_link_layer.network_layer.ip_dst, 
 						data_link_layer.network_layer._ip_packet_header.header.TimetoLive,
-						data_link_layer.network_layer.type);
+						data_link_layer.network_layer.type,
+						data_link_layer.network_layer.transport_layer.udp_header.Src_Port,
+						data_link_layer.network_layer.transport_layer.udp_header.Dst_Port,
+						data_link_layer.network_layer.transport_layer.udp_header.Length);
 		cnt += 1;
 	}
 	logger.info("total cnt is: {}", cnt);
+	logger.info("IPµØÖ·\tMACµØÖ·");
+	for (auto item = data_link_layer.network_layer.arp_table.cbegin(); item != data_link_layer.network_layer.arp_table.cend(); ++item) {
+		logger.info("{}\t{}", item->first, item->second);
+	}
 	return kPcapParserSucc;
 
 }

@@ -22,8 +22,18 @@
 #define BIG_ENDIAN 0xa1b2c3d4
 #define LEN_PCAP_HEADER 24
 #define LEN_PCAP_PACKET_HEADER 16
+
 #define LEN_ETHER_FRAME_HEADER 14
+
 #define LEN_IP_PACKET_HEADER 20
+
+#define ARP_REQUEST 1
+#define ARP_RESPONSE 2
+
+#define LEN_UDP_HEADER 16
+
+#define DNS_PORT 53
+#define MULTI_DNS_PORT 5353
 
 enum PcapParserErr {
     kPcapParserSucc = 0,
@@ -127,6 +137,102 @@ struct _IPPacketHeader {
         IHL = 4 * (header.Version_IHL & 0x0f);
         Version = (header.Version_IHL >> 4) & 0x0f;
     }
+};
+
+// define ARP header
+struct ARPHeader
+{
+    uint16_t Hardware_Type;
+    uint16_t Protocol_Type;
+    uint8_t Hardware_Size;
+    uint8_t Protocol_Size;
+    uint16_t Opcode;
+    uint8_t S_Mac[6];
+    uint32_t S_IP;
+    uint8_t T_Mac[6];
+    uint32_t T_IP;
+
+    void swap(bool is_big_endian)
+    {
+        if (is_big_endian) // TODO why no swap
+        {
+            Hardware_Type = bswap_16(Hardware_Type);
+            Protocol_Type = bswap_16(Protocol_Type);
+            Opcode = bswap_16(Opcode);
+            S_IP = bswap_32(S_IP);
+            T_IP = bswap_32(T_IP);
+        }
+    }
+};
+
+//define UDP header
+struct UDPHeader
+{
+    uint16_t Src_Port;
+    uint16_t Dst_Port;
+    uint16_t Length;
+    uint16_t Checksum;
+
+    void swap(bool is_big_endian)
+    {
+        if (is_big_endian) // TODO why no swap
+        {
+            Src_Port = bswap_16(Src_Port);
+            Dst_Port = bswap_16(Dst_Port);
+            Length = bswap_16(Length);
+            Checksum = bswap_32(Checksum);
+        }
+    }
+};
+
+// define DNS header
+struct DNSHeader
+{
+    uint16_t ID;
+    uint16_t Flags;
+    uint16_t QDCOUNT;
+    uint16_t ANCOUNT;
+    uint16_t NSCOUNT;
+    uint16_t ARCOUNT;
+
+    void swap(bool is_big_endian)
+    {
+        if (is_big_endian) // TODO why no swap
+        {
+            ID = bswap_16(ID);
+            Flags = bswap_16(Flags);
+            QDCOUNT = bswap_16(QDCOUNT);
+            ANCOUNT = bswap_32(ANCOUNT);
+            NSCOUNT = bswap_16(NSCOUNT);
+            ARCOUNT = bswap_32(ARCOUNT);
+        }
+    }
+};
+
+struct _DNSHeader
+{
+    DNSHeader header;
+    uint8_t QR;
+    uint8_t OPCODE;
+    uint8_t AA;
+    uint8_t TC;
+    uint8_t RD;
+    uint8_t RA;
+    uint8_t Z;
+    uint8_t RCODE;
+
+    void flag_swap(void)
+    {
+        QR = header.Flags & 0x0001;
+        OPCODE = header.Flags & 0x00E1;
+        AA = header.Flags & 0x0010;
+        TC = header.Flags & 0x0040;
+        RD = header.Flags & 0x0080;
+        RA = header.Flags & 0x0100;
+        Z = header.Flags & 0x0E00;
+        RCODE = header.Flags & 0xF000;
+    }
+
 };
 
 #pragma pack()

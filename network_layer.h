@@ -3,6 +3,7 @@
 
 #include "protocol_format.h"
 #include <spdlog/spdlog.h>
+#include "transport_layer.h"
 
 class NetworkLayer {
 	private:
@@ -13,14 +14,18 @@ class NetworkLayer {
 		// define variables
 		bool is_big_endian = true;
 		_IPPacketHeader _ip_packet_header;
+		ARPHeader arp_header;
 		std::map<uint16_t, std::string> IPProto;
 		char ip_src[16] = {};
 		char ip_dst[16] = {};
 		std::string type;
+		std::map<std::string, std::string> arp_table;
 
 		// define ip layer segment process func map
 		typedef PcapParserErr (NetworkLayer::* network_layer_cb)(char*);
 		std::map<std::string, network_layer_cb> NetworkLayerHanlder;
+
+		TransportLayer transport_layer = TransportLayer(is_big_endian);
 
 
 		NetworkLayer(bool);
