@@ -19,9 +19,9 @@
 
 int LogInit(const char* log_path) {
 
-    // create color multi threaded logger
-    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-    console_sink->set_level(spdlog::level::debug);
+    //// create color multi threaded logger
+    //auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+    //console_sink->set_level(spdlog::level::debug);
     // Create a file rotating logger with 5mb size max and 10 rotated files
     size_t max_size = 1024 * 1024 * 5;
     size_t max_files = 10;
@@ -29,7 +29,7 @@ int LogInit(const char* log_path) {
     file_sink->set_level(spdlog::level::trace);
 
     std::vector<spdlog::sink_ptr> sinks;
-    sinks.push_back(console_sink);
+    //sinks.push_back(console_sink);
     sinks.push_back(file_sink);
     auto m_logger = std::make_shared<spdlog::logger>("pcap-parse", begin(sinks), end(sinks));
     spdlog::register_logger(m_logger);

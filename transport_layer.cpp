@@ -24,7 +24,7 @@ PcapParserErr TransportLayer::udp_hanlde_callback(char* file_ptr)
 	//if (udp_header.Src_Port == DNS_PORT||
 	//	udp_header.Dst_Port == DNS_PORT)
 	{
-		//(application_layer.*application_layer.ApplicationLayerHanlder["DNS"])(file_ptr + LEN_UDP_HEADER, udp_header.Length- LEN_UDP_HEADER);
+		(application_layer.*application_layer.ApplicationLayerHanlder["DNS"])(file_ptr + LEN_UDP_HEADER, udp_header.Length- LEN_UDP_HEADER);
 	}
 	return kPcapParserSucc;
 }

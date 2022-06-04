@@ -31,19 +31,34 @@ PcapParserErr NetworkLayer::ipv4_segment_hanlde_callback(char* file_ptr) {
 		ip_int_to_str(_ip_packet_header.header.SourceAddress, ip_src);
 		ip_int_to_str(_ip_packet_header.header.DestinationAddress, ip_dst);
 
-		auto ip_type_pair = IPProto.find(_ip_packet_header.header.Protocol);
-		if (ip_type_pair != IPProto.end()) {
-			type = ip_type_pair->second;
-			auto transport_layer_cb_pair = transport_layer.TransportLayerHanlder.find(type);
-			if (transport_layer_cb_pair != transport_layer.TransportLayerHanlder.end())
-			{
-				(transport_layer.*transport_layer.TransportLayerHanlder[type])(file_ptr + LEN_IP_PACKET_HEADER);
-			}
+		switch (_ip_packet_header.header.Protocol)
+		{
+		case 0x11:
+			transport_layer.udp_hanlde_callback(file_ptr + LEN_IP_PACKET_HEADER);
+			break;
+		case 0x06:
+			transport_layer.tcp_hanlde_callback(file_ptr + LEN_IP_PACKET_HEADER);
+			break;
+		case 0x01:
+			transport_layer.icmp_hanlde_callback(file_ptr + LEN_IP_PACKET_HEADER);
+			break;
+		default:
+			break;
 		}
-		else {
-			type = "unkown type";
-			logger.error("ip proto type not found 0x{:02x}", _ip_packet_header.header.Protocol);
-		}
+
+		//auto ip_type_pair = IPProto.find(_ip_packet_header.header.Protocol);
+		//if (ip_type_pair != IPProto.end()) {
+		//	type = ip_type_pair->second;
+		//	auto transport_layer_cb_pair = transport_layer.TransportLayerHanlder.find(type);
+		//	if (transport_layer_cb_pair != transport_layer.TransportLayerHanlder.end())
+		//	{
+		//		//(transport_layer.*transport_layer.TransportLayerHanlder[type])(file_ptr + LEN_IP_PACKET_HEADER);
+		//	}
+		//}
+		//else {
+		//	type = "unkown type";
+		//	logger.error("ip proto type not found 0x{:02x}", _ip_packet_header.header.Protocol);
+		//}
 
 	}
 	else {
@@ -71,12 +86,12 @@ PcapParserErr NetworkLayer::arp_hanlde_callback(char* file_ptr) {
 	switch (arp_header.Opcode)
 	{
 		case ARP_REQUEST:
-			printf("[ARP请求] %s(%s) 查询 %s 的MAC地址在哪里\n", s_ip, s_mac, t_ip);
+			//printf("[ARP请求] %s(%s) 查询 %s 的MAC地址在哪里\n", s_ip, s_mac, t_ip);
 			//logger.info("[ARP请求] {}({}) 查询 {} 的MAC地址在哪里", s_ip, s_mac,	t_ip);
 			arp_table.insert(std::pair<std::string, std::string>(s_ip, s_mac));
 			break;
 		case ARP_RESPONSE:
-			printf("[ARP响应] %s(%s) 回复 %s 的MAC地址在我这里\n", s_ip, s_mac, t_ip);
+			//printf("[ARP响应] %s(%s) 回复 %s 的MAC地址在我这里\n", s_ip, s_mac, t_ip);
 			//logger.info("[ARP响应] {}({}) 回复 {} 的MAC地址在我这里", s_ip, s_mac, t_ip);
 			arp_table.insert(std::pair<std::string, std::string>(s_ip, s_mac));
 			break;

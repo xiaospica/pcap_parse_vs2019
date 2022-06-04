@@ -29,8 +29,9 @@ PcapParserErr PcapParser::parse_packet_header() {
 	file_pointer += LEN_PCAP_PACKET_HEADER;
 	// process packet header timestamp
 	time_t packet_time_s = (time_t)pcap_packet_header.Timestamp_H;
-	struct tm* info = localtime(&packet_time_s);
-	strftime(timestrbuf, sizeof(timestrbuf), "[%Y/%m/%d %H:%M:%S]", info);
+	to_date(packet_time_s, timestrbuf);
+	//struct tm* info = localtime(&packet_time_s);
+	//strftime(timestrbuf, sizeof(timestrbuf), "[%Y/%m/%d %H:%M:%S]", info);
 	return kPcapParserSucc;
 
 }
@@ -43,6 +44,11 @@ PcapParserErr PcapParser::run(std::string _filter) {
 	DataLinkLayer data_link_layer = DataLinkLayer(is_big_endian);
 	uint32_t idx = LEN_PCAP_HEADER;
 	uint32_t cnt = 1;
+
+	timeb t;
+	ftime(&t);
+	uint32_t start = t.time * 1000 + t.millitm;
+	printf("start %d\n", start);
 	while (idx < (this->file_size- LEN_PCAP_HEADER)) {
 
 		// process packet header
@@ -70,7 +76,7 @@ PcapParserErr PcapParser::run(std::string _filter) {
 		//				data_link_layer.network_layer.transport_layer.udp_header.Dst_Port,
 		//				data_link_layer.network_layer.transport_layer.udp_header.Length);
 
-		this->output(cnt, data_link_layer);
+		//this->output(cnt, data_link_layer);
 
 		cnt += 1;
 	}
@@ -79,6 +85,8 @@ PcapParserErr PcapParser::run(std::string _filter) {
 	for (auto item = data_link_layer.network_layer.arp_table.cbegin(); item != data_link_layer.network_layer.arp_table.cend(); ++item) {
 		logger.info("{}\t{}", item->first, item->second);
 	}
+	ftime(&t);
+	printf("end %d ms\n", t.time * 1000 + t.millitm - start);
 	return kPcapParserSucc;
 
 }

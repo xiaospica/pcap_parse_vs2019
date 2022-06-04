@@ -101,12 +101,17 @@ uint16_t ApplicationLayer::dns_answers_parse(char* file_ptr, char* ptr_cpy, uint
 				}
 				logger.info("DNSœÏ”¶CNAME: {}", dns_query.Domain_Name);
 			}
-			if (dns_query.Query_Type == DNS_QUERY_TYPE_A)
+			else if (dns_query.Query_Type == DNS_QUERY_TYPE_A)
 			{
 				ip_int_to_str(*(uint32_t*)file_ptr, ip_str);
 				file_ptr += sizeof(uint32_t); // size of ip address
 				dns_offset += sizeof(uint32_t);
 				logger.info("DNSœÏ”¶IP: {}", ip_str);
+			}
+			else // currently skip other type
+			{
+				file_ptr += dns_answer.Data_Len;
+				dns_offset += dns_answer.Data_Len;
 			}
 
 			acnt += 1;

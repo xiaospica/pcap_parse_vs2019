@@ -27,22 +27,38 @@ PcapParserErr DataLinkLayer::parse_ether_header(char* file_ptr) {
 	arrayToMac(ether_frame_header.DstMac, mac_dst);
 	arrayToMac(ether_frame_header.SrcMac, mac_src);
 
-	auto ether_proto_pair = EtherProto.find(ether_frame_header.Type);
-	if (ether_proto_pair != EtherProto.end()) {
-		type = ether_proto_pair->second;
-		auto network_layer_cb_pair = network_layer.NetworkLayerHanlder.find(type);
-		if (network_layer_cb_pair != network_layer.NetworkLayerHanlder.end())
-		{
-			(network_layer.*network_layer.NetworkLayerHanlder[type])(file_ptr + LEN_ETHER_FRAME_HEADER);
-			//(network_layer.*NetworkLayer::NetworkLayerHanlder[type])();			
-		}
+	switch (ether_frame_header.Type)
+	{
+	case 0x0800:
+		network_layer.ipv4_segment_hanlde_callback(file_ptr + LEN_ETHER_FRAME_HEADER);
+		break;
+	case 0x0806:
+		network_layer.arp_hanlde_callback(file_ptr + LEN_ETHER_FRAME_HEADER);
+		break;
+	case 0x86DD:
+		network_layer.ipv6_segment_hanlde_callback(file_ptr + LEN_ETHER_FRAME_HEADER);
+		break;
+	default:
+		break;
 	}
-	else {
-		std::stringstream stream;
-		stream << "0x" << std::setfill('0') << std::setw(sizeof(uint16_t) * 2) << std::hex << ether_frame_header.Type;
-		type = stream.str();
-		logger.error("ether proto type not found 0x{:04x}", ether_frame_header.Type);
-	}
+
+	//auto ether_proto_pair = EtherProto.find(ether_frame_header.Type);
+	//if (ether_proto_pair != EtherProto.end()) {
+	//	type = ether_proto_pair->second;
+	//	auto network_layer_cb_pair = network_layer.NetworkLayerHanlder.find(type);
+	//	if (network_layer_cb_pair != network_layer.NetworkLayerHanlder.end())
+	//	{
+	//		(network_layer.*network_layer.NetworkLayerHanlder[type])(file_ptr + LEN_ETHER_FRAME_HEADER);
+	//		//(network_layer.*NetworkLayer::NetworkLayerHanlder[type])();			
+	//	}
+	//}
+	//else {
+	//	//std::stringstream stream;
+	//	//stream << "0x" << std::setfill('0') << std::setw(sizeof(uint16_t) * 2) << std::hex << ether_frame_header.Type;
+	//	//type = stream.str();
+	//	type = "unknow type";
+	//	logger.error("ether proto type not found 0x{:04x}", ether_frame_header.Type);
+	//}
 	return kPcapParserSucc;
 
 }
